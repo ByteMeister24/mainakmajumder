@@ -5,303 +5,119 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Mainak Majumder | CV" />
   <title>Mainak Majumder | CV</title>
-
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --card:#0f1621;
-      --text:#e6edf3;
-      --muted:#9fb0c0;
-      --line:#1f2a37;
-      --accent:#6ea8fe;
-      --accent2:#7ee787;
-      --chip:#101a27;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 14px;
-      --max: 1020px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: var(--sans);
-      background:
-        radial-gradient(1200px 700px at 20% -10%, rgba(110,168,254,.18), transparent 60%),
-        radial-gradient(1200px 700px at 85% 5%, rgba(126,231,135,.12), transparent 55%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.55;
-    }
-    a{color:var(--accent); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 44px}
-    header{
-      display:flex; gap:18px; align-items:flex-start; justify-content:space-between;
-      padding:22px 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-    .title h1{margin:0 0 4px; font-size:28px; letter-spacing:.2px}
-    .title .sub{margin:0; color:var(--muted); font-size:14px}
-    .meta{
-      display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; align-items:center;
-      text-align:right;
-    }
-    .pill{
-      display:inline-flex; gap:8px; align-items:center;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.02);
-      padding:8px 10px;
-      border-radius:999px;
-      color:var(--muted);
-      font-size:13px;
-      white-space:nowrap;
-    }
-    .pill b{color:var(--text); font-weight:600}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:16px;
-      margin-top:16px;
-    }
-    @media (max-width: 920px){
-      header{flex-direction:column; align-items:stretch}
-      .meta{text-align:left; justify-content:flex-start}
-      .grid{grid-template-columns:1fr}
-    }
-    section.card{
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.02);
-      box-shadow: 0 6px 18px rgba(0,0,0,.25);
-      padding:18px 18px;
-    }
-    .card h2{
-      margin:0 0 10px;
-      font-size:16px;
-      letter-spacing:.3px;
-      text-transform:uppercase;
-      color: var(--muted);
-    }
-    .list{display:flex; flex-direction:column; gap:12px}
-    .item{
-      padding:12px 12px;
-      border:1px solid rgba(31,42,55,.9);
-      border-radius: 12px;
-      background: rgba(15,22,33,.55);
-    }
-    .item .top{
-      display:flex; gap:10px; justify-content:space-between; align-items:flex-start;
-    }
-    .item .role{font-weight:700}
-    .item .org{color:var(--muted)}
-    .item .when{color:var(--muted); font-size:13px; white-space:nowrap}
-    .item .desc{margin:8px 0 0; color:var(--text)}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
-    .chip{
-      font-size:12px;
-      padding:6px 8px;
-      border-radius:999px;
-      border:1px solid rgba(31,42,55,.95);
-      background: var(--chip);
-      color: var(--muted);
-    }
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 620px){
-      .split{grid-template-columns:1fr}
-    }
-    .pub{
-      display:flex; gap:12px; align-items:flex-start;
-      border:1px solid rgba(31,42,55,.9);
-      border-radius: 12px;
-      padding:12px 12px;
-      background: rgba(15,22,33,.55);
-    }
-    .pub .n{
-      font-family: var(--mono);
-      font-size:12px;
-      color: var(--accent2);
-      padding:5px 8px;
-      border-radius:10px;
-      border:1px solid rgba(126,231,135,.35);
-      background: rgba(126,231,135,.08);
-      min-width: 34px;
-      text-align:center;
-    }
-    .pub .t{font-weight:700}
-    .pub .c{color:var(--muted); font-size:13px; margin-top:4px}
-    .toolbar{
-      position:sticky; top:0; z-index:10;
-      margin-top:14px;
-      padding:10px;
-      border:1px solid var(--line);
-      background: rgba(11,15,20,.72);
-      backdrop-filter: blur(10px);
-      border-radius: 999px;
-      display:flex; gap:10px; align-items:center; justify-content:space-between;
-    }
-    .search{
-      flex:1;
-      display:flex; gap:10px; align-items:center;
-      padding:8px 12px;
-      border:1px solid rgba(31,42,55,.95);
-      border-radius:999px;
-      background: rgba(255,255,255,.02);
-    }
-    .search input{
-      width:100%;
-      border:0;
-      outline:none;
-      background:transparent;
-      color:var(--text);
-      font-size:14px;
-    }
-    .btn{
-      border:1px solid rgba(31,42,55,.95);
-      border-radius:999px;
-      padding:8px 12px;
-      background: rgba(255,255,255,.02);
-      color:var(--muted);
-      cursor:pointer;
-      font-size:13px;
-      white-space:nowrap;
-    }
-    .btn:hover{border-color: rgba(110,168,254,.45); color:var(--text)}
-    footer{
-      margin-top:18px;
-      color:var(--muted);
-      font-size:13px;
-      padding:0 4px;
-    }
-    .muted{color:var(--muted)}
-    .twoCol{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+  <link rel="stylesheet" href="styles.css?v=20260308o" />
 </head>
 
 <body>
   <div class="wrap">
+    <div class="portfolioShell">
+      <aside class="profileSidebar">
+        <div class="avatarHalf">
+          <img class="avatarHalfImage" src="assets/profile_white.jpg" alt="Mainak Majumder profile photo" width="150" height="190" />
+        </div>
+        <h1 class="sidebarName">Mainak Majumder <span class="nameSuffix">(M.Sc.)</span></h1>
 
-    <header>
-      <div class="title">
-        <h1>Mainak Majumder, M. Sc.</h1>
-        <p class="sub">PhD candidate (Computer Science) | IT/OT convergence | OPC UA | CPPS</p>
-      </div>
+        <div class="sidebarSocial">
+          <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+            <i class="ph ph-linkedin-logo" aria-hidden="true"></i>
+          </a>
+          <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub">
+            <i class="ph ph-github-logo" aria-hidden="true"></i>
+          </a>
+          <a href="mailto:mainak.9042@gmail.com" aria-label="Email">
+            <i class="ph ph-envelope-simple" aria-hidden="true"></i>
+          </a>
+        </div>
 
-      <div class="meta">
-        <span class="pill"><b>Email</b> <a href="mailto:mainak.9042@gmail.com">mainak.9042@gmail.com</a></span>
-        <span class="pill"><b>Phone</b> <a href="tel:+436703517470">+43 670 3517470</a></span>
-        <span class="pill"><b>Location</b> Linz, Austria</span>
-        <!-- Add your links here -->
-        <!-- Example:
-        <span class="pill"><b>GitHub</b> <a href="https://github.com/YOURNAME" target="_blank" rel="noreferrer">github.com/YOURNAME</a></span>
-        <span class="pill"><b>LinkedIn</b> <a href="https://www.linkedin.com/in/YOURNAME" target="_blank" rel="noreferrer">linkedin.com/in/YOURNAME</a></span>
-        -->
-      </div>
-    </header>
+        <div class="sidebarContact">
+          <span class="contactLine">
+            <i class="ph ph-map-pin" aria-hidden="true"></i>
+            <span>Linz, Austria</span>
+          </span>
+          <div class="sidebarLanguages" aria-label="Language fluency">
+            <span class="sidebarMetaTitle">Languages</span>
+            <span class="contactLine">
+              <i class="ph ph-translate" aria-hidden="true"></i>
+              <span>English: C1</span>
+            </span>
+            <span class="contactLine">
+              <i class="ph ph-translate" aria-hidden="true"></i>
+              <span>German: A2</span>
+            </span>
+            <span class="contactLine">
+              <i class="ph ph-translate" aria-hidden="true"></i>
+              <span>Hindi: Native</span>
+            </span>
+            <span class="contactLine">
+              <i class="ph ph-translate" aria-hidden="true"></i>
+              <span>Bengali: Native</span>
+            </span>
+          </div>
+        </div>
 
-    <div class="toolbar" aria-label="Search toolbar">
-      <div class="search">
-        <span class="muted" style="font-family:var(--mono);font-size:12px;">SEARCH</span>
-        <input id="q" type="search" placeholder="Type to filter experiences, skills, publications..." />
-      </div>
-      <button class="btn" id="printBtn" title="Print or save as PDF">Print</button>
-      <button class="btn" id="topBtn" title="Back to top">Top</button>
-    </div>
+        <a class="sidebarCta" href="assets/curriculum_vitae.pdf" target="_blank" rel="noreferrer" download>Download CV</a>
+      </aside>
 
-    <div class="grid">
-      <!-- LEFT COLUMN -->
-      <div class="twoCol">
-        <div data-include="sections/about.html"></div>
-        <div data-include="sections/work-experience.html"></div>
-        <div data-include="sections/academic-experience.html"></div>
-        <div data-include="sections/publications.html"></div>
-      </div>
+      <main class="mainCard">
+        <div class="mainLayout">
+          <section class="contentPane">
+            <div class="tabPanels">
+              <section class="tabPanel is-active" id="panel-about" role="tabpanel" aria-labelledby="tab-about">
+                <div data-include="sections/about.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-industry" role="tabpanel" aria-labelledby="tab-industry" hidden>
+                <div data-include="sections/Industry.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-academia" role="tabpanel" aria-labelledby="tab-academia" hidden>
+                <div data-include="sections/academia.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-education" role="tabpanel" aria-labelledby="tab-education" hidden>
+                <div data-include="sections/education.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-publications" role="tabpanel" aria-labelledby="tab-publications" hidden>
+                <div data-include="sections/publications.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-teaching" role="tabpanel" aria-labelledby="tab-teaching" hidden>
+                <div data-include="sections/teaching.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
+                <div data-include="sections/projects.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-activities" role="tabpanel" aria-labelledby="tab-activities" hidden>
+                <div data-include="sections/activities.html"></div>
+              </section>
+              <section class="tabPanel" id="panel-contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+                <div data-include="sections/contact.html"></div>
+              </section>
+            </div>
+          </section>
 
-      <!-- RIGHT COLUMN -->
-      <div class="twoCol">
-        <div data-include="sections/skills.html"></div>
-        <div data-include="sections/teaching.html"></div>
-        <div data-include="sections/projects.html"></div>
-        <div data-include="sections/activities.html"></div>
-        <div data-include="sections/contact.html"></div>
-      </div>
+          <nav class="tabs iconRail" role="tablist" aria-label="CV sections">
+            <button class="tabBtn is-active" type="button" role="tab" aria-label="About" aria-selected="true" aria-controls="panel-about" id="tab-about" data-tab-target="panel-about"><i class="ph ph-user-circle" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Industry" aria-selected="false" aria-controls="panel-industry" id="tab-industry" data-tab-target="panel-industry"><i class="ph ph-briefcase" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Academia" aria-selected="false" aria-controls="panel-academia" id="tab-academia" data-tab-target="panel-academia"><i class="ph ph-bank" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Education" aria-selected="false" aria-controls="panel-education" id="tab-education" data-tab-target="panel-education"><i class="ph ph-graduation-cap" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Research" aria-selected="false" aria-controls="panel-publications" id="tab-publications" data-tab-target="panel-publications"><i class="ph ph-article" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Teaching" aria-selected="false" aria-controls="panel-teaching" id="tab-teaching" data-tab-target="panel-teaching"><i class="ph ph-chalkboard-simple" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Projects" aria-selected="false" aria-controls="panel-projects" id="tab-projects" data-tab-target="panel-projects"><i class="ph ph-folder-simple" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Activities" aria-selected="false" aria-controls="panel-activities" id="tab-activities" data-tab-target="panel-activities"><i class="ph ph-users-three" aria-hidden="true"></i></button>
+            <button class="tabBtn" type="button" role="tab" aria-label="Contact" aria-selected="false" aria-controls="panel-contact" id="tab-contact" data-tab-target="panel-contact"><i class="ph ph-envelope-simple" aria-hidden="true"></i></button>
+          </nav>
+        </div>
+      </main>
     </div>
 
     <footer>
       <div>Last updated: <span id="updated"></span></div>
-      <div class="muted">Built as a single-page GitHub Pages site from your CV content.</div>
     </footer>
 
   </div>
 
-  <script>
-    function norm(s){ return (s || '').toLowerCase().trim(); }
-
-    async function loadSections() {
-      const slots = Array.from(document.querySelectorAll('[data-include]'));
-
-      await Promise.all(slots.map(async (slot) => {
-        const file = slot.getAttribute('data-include');
-
-        try {
-          const res = await fetch(file);
-          if (!res.ok) throw new Error(`Failed to load ${file}: ${res.status}`);
-
-          const html = await res.text();
-          const tpl = document.createElement('template');
-          tpl.innerHTML = html.trim();
-          slot.replaceWith(tpl.content);
-        } catch (err) {
-          console.error(err);
-          slot.outerHTML = `
-            <section class="card">
-              <h2>Section load error</h2>
-              <p class="muted" style="margin:0;">Could not load <code>${file}</code>.</p>
-            </section>
-          `;
-        }
-      }));
-    }
-
-    function initPageUi() {
-      const q = document.getElementById('q');
-      const searchable = Array.from(document.querySelectorAll('[data-searchable], .item, .pub'));
-      const updated = document.getElementById('updated');
-      updated.textContent = new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
-
-      q.addEventListener('input', () => {
-        const term = norm(q.value);
-        if (!term) {
-          searchable.forEach(el => el.style.display = '');
-          return;
-        }
-
-        searchable.forEach(el => {
-          const text = norm(el.innerText);
-          el.style.display = text.includes(term) ? '' : 'none';
-        });
-      });
-
-      document.getElementById('printBtn').addEventListener('click', () => window.print());
-      document.getElementById('topBtn').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      await loadSections();
-      initPageUi();
-    });
-  </script>
+    <script src="main.js?v=20260308c"></script>
 </body>
 </html>
+
