@@ -272,9 +272,20 @@ a:hover{text-decoration:underline}
 }
 
 .tabBtn.is-active{
-  color:var(--accent2);
-  background: rgba(191,227,246,.95);
-  box-shadow: 0 10px 18px rgba(23,63,95,.24);
+  color:#EAF2FA;
+  background: #173F5F;
+  box-shadow: 0 10px 18px rgba(23,63,95,.30);
+}
+
+.tabBtn.is-active:hover,
+.tabBtn.is-active:focus,
+.tabBtn.is-active:focus-visible,
+.tabBtn[aria-selected="true"],
+.tabBtn[aria-selected="true"]:hover,
+.tabBtn[aria-selected="true"]:focus,
+.tabBtn[aria-selected="true"]:focus-visible{
+  color:#EAF2FA;
+  background:#173F5F;
 }
 
 .tabBtn:focus-visible{
@@ -310,6 +321,7 @@ section.card{
   font-weight:700;
 }
 
+#about h2,
 #industry h2,
 #academia h2,
 #education h2{
@@ -456,18 +468,99 @@ section.card{
 .item .desc{margin:8px 0 0; color:var(--text); text-align:justify}
 #about .desc{font-size:17px; line-height:1.68}
 
-.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
 
 .chip{
   font-family:var(--sans);
   font-weight:600;
-  font-size:12px;
-  padding:6px 8px;
+  font-size:11px;
+  line-height:1.2;
+  padding:4px 8px;
   border-radius:999px;
   border:1px solid rgba(2,119,189,.34);
   background: var(--chip);
   color: var(--accent2);
-  box-shadow: 0 2px 8px rgba(2,119,189,.14);
+  white-space:nowrap;
+  box-shadow: 0 1px 3px rgba(23,63,95,.10);
+}
+
+.chip.has-logo{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+.chipLogo{
+  width:13px;
+  height:13px;
+  flex:0 0 13px;
+  object-fit:contain;
+}
+
+.techBoard{
+  display:grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(130px,.62fr);
+  grid-template-areas:
+    "modelling modelling iiot"
+    "programming database iiot"
+    "protocols protocols industry"
+    "plc embedded industry";
+  gap:10px;
+  background: linear-gradient(180deg, rgba(244,248,252,.86), rgba(240,246,252,.92));
+  max-width: 100%;
+}
+
+.techTile{
+  border:1px solid rgba(166,191,213,.42);
+  border-radius:18px;
+  padding:12px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 6px 14px rgba(23,63,95,.08);
+  min-width:0;
+}
+
+.techTile h3{
+  margin:0;
+  font-family:var(--sans);
+  font-size:18px;
+  font-weight:700;
+  line-height:1.2;
+  color:var(--text);
+  text-align:center;
+}
+
+.techTile .chips{
+  margin-top:8px;
+}
+
+.techProtocols .chips{
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+
+.techProtocols .chips::-webkit-scrollbar{
+  display:none;
+}
+
+.techModelling{grid-area:modelling}
+.techProgramming{grid-area:programming}
+.techDatabase{grid-area:database}
+.techProtocols{grid-area:protocols}
+.techPlc{grid-area:plc}
+.techEmbedded{grid-area:embedded}
+.techIiot{
+  grid-area:iiot;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.techIndustry{
+  grid-area:industry;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 
 .split{
@@ -649,6 +742,20 @@ footer{
   .barRow{grid-template-columns: 100px 1fr auto;}
   .barValue{min-width:44px;}
   .split{grid-template-columns:1fr;}
+  .techBoard{
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "modelling modelling"
+      "programming database"
+      "iiot iiot"
+      "protocols protocols"
+      "plc embedded"
+      "industry industry";
+  }
+  .techIiot,
+  .techIndustry{
+    justify-content:flex-start;
+  }
 }
 
 @media (max-width: 540px){
@@ -669,6 +776,26 @@ footer{
     white-space:nowrap;
   }
   .industryTimeline .role{
+    font-size:16px;
+  }
+  .techBoard{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "modelling"
+      "programming"
+      "database"
+      "iiot"
+      "protocols"
+      "plc"
+      "embedded"
+      "industry";
+    gap:10px;
+  }
+  .techTile{
+    border-radius:14px;
+    padding:10px;
+  }
+  .techTile h3{
     font-size:16px;
   }
   .timelineDot{

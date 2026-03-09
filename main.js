@@ -270,6 +270,30 @@ function syncTimelineDots() {
   });
 }
 
+function attachSkillLogos() {
+  const chips = Array.from(document.querySelectorAll('#about .chip[data-logo]'));
+
+  chips.forEach((chip) => {
+    const slug = chip.getAttribute('data-logo')?.trim();
+    if (!slug || chip.querySelector('.chipLogo')) return;
+
+    const img = document.createElement('img');
+    img.className = 'chipLogo';
+    img.alt = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.src = `https://cdn.simpleicons.org/${encodeURIComponent(slug)}/173F5F`;
+
+    img.addEventListener('error', () => {
+      chip.classList.remove('has-logo');
+      img.remove();
+    });
+
+    chip.prepend(img);
+    chip.classList.add('has-logo');
+  });
+}
+
 function getActivePanel() {
   return document.querySelector('.tabPanel.is-active');
 }
@@ -348,6 +372,7 @@ function initPageUi() {
 
     document.addEventListener('DOMContentLoaded', async () => {
       await loadSections();
+      attachSkillLogos();
       syncTimelineDots();
       await loadResearchMetrics();
       initPageUi();
