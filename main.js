@@ -199,6 +199,90 @@ async function loadResearchMetrics() {
   }
 }
 
+function normalizeText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function scoreWorkTitleCandidate(targetTitle, candidateTitle) {
+  const target = normalizeText(targetTitle);
+  const candidate = normalizeText(candidateTitle);
+  if (!target || !candidate) return 0;
+  if (target === candidate) return 100;
+
+  const targetTokens = new Set(target.split(' ').filter((t) => t.length > 2));
+  const candidateTokens = new Set(candidate.split(' ').filter((t) => t.length > 2));
+  let overlap = 0;
+  targetTokens.forEach((token) => {
+    if (candidateTokens.has(token)) overlap += 1;
+  });
+
+  const coverage = targetTokens.size ? overlap / targetTokens.size : 0;
+  return Math.round(coverage * 100);
+}
+
+async function fetchOpenAlexWorkCitations({ doi = '', title = '' }) {
+  const cleanDoi = String(doi || '').trim().replace(/^https?:\/\/doi\.org\//i, '');
+  const cleanTitle = String(title || '').trim();
+
+  if (cleanDoi) {
+    try {
+      const doiUri = `https://doi.org/${cleanDoi}`;
+      const work = await fetchJsonWithTimeout(`https://api.openalex.org/works/${encodeURIComponent(doiUri)}`);
+      const citations = Number(work?.cited_by_count);
+      if (Number.isFinite(citations)) return citations;
+    } catch (_err) {
+      // Fall back to title search below.
+    }
+  }
+
+  if (!cleanTitle) return NaN;
+
+  const data = await fetchJsonWithTimeout(`https://api.openalex.org/works?search=${encodeURIComponent(cleanTitle)}&per-page=10`);
+  const results = Array.isArray(data?.results) ? data.results : [];
+  const best = results
+    .map((work) => ({
+      work,
+      score: scoreWorkTitleCandidate(cleanTitle, work?.display_name || ''),
+    }))
+    .sort((a, b) => b.score - a.score)[0];
+
+  if (!best || best.score < 55) return NaN;
+  const citations = Number(best.work?.cited_by_count);
+  return Number.isFinite(citations) ? citations : NaN;
+}
+
+async function loadPublicationCitations() {
+  const items = Array.from(document.querySelectorAll('#publications .ieeeItem'));
+  if (items.length === 0) return;
+
+  await Promise.all(items.map(async (item) => {
+    const citeEl = item.querySelector('.ieeeCite');
+    if (!citeEl) return;
+    const citeValueEl = citeEl.querySelector('.ieeeCiteValue') || citeEl;
+
+    const doi = item.getAttribute('data-doi') || '';
+    const title = item.getAttribute('data-title') || '';
+
+    try {
+      const citations = await fetchOpenAlexWorkCitations({ doi, title });
+      if (Number.isFinite(citations)) {
+        citeValueEl.textContent = `${citations.toLocaleString()}`;
+        citeEl.classList.add('is-live');
+      } else {
+        citeValueEl.textContent = 'Not available';
+        citeEl.classList.remove('is-live');
+      }
+    } catch (_err) {
+      citeValueEl.textContent = 'Not available';
+      citeEl.classList.remove('is-live');
+    }
+  }));
+}
+
     async function loadSections() {
       const slots = Array.from(document.querySelectorAll('[data-include]'));
 
@@ -294,6 +378,161 @@ function attachSkillLogos() {
   });
 }
 
+function attachProjectTechIcons() {
+  const items = Array.from(document.querySelectorAll('.projTopics:not(.projTopicsPlain) li'));
+
+  function prependFallbackIcon(item) {
+    if (item.querySelector('.projTechIcon') || item.querySelector('.projTechLogo')) return;
+    const iconClass = item.getAttribute('data-fallback-icon')?.trim() || 'ph-cpu';
+    const icon = document.createElement('i');
+    icon.className = `ph ${iconClass} projTechIcon`;
+    icon.setAttribute('aria-hidden', 'true');
+    item.prepend(icon);
+  }
+
+  items.forEach((item) => {
+    const slug = item.getAttribute('data-logo')?.trim();
+    if (!slug) {
+      prependFallbackIcon(item);
+      return;
+    }
+
+    if (item.querySelector('.projTechLogo') || item.querySelector('.projTechIcon')) return;
+
+    const img = document.createElement('img');
+    img.className = 'projTechLogo';
+    img.alt = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.src = `https://cdn.simpleicons.org/${encodeURIComponent(slug)}/173F5F`;
+
+    img.addEventListener('error', () => {
+      img.remove();
+      prependFallbackIcon(item);
+    });
+
+    item.prepend(img);
+  });
+}
+
+function boldPublicationTitles() {
+  const items = Array.from(document.querySelectorAll('#publications .ieeeItem'));
+
+  items.forEach((item) => {
+    const title = item.getAttribute('data-title')?.trim();
+    const refEl = item.querySelector('.ieeeRef');
+    if (!title || !refEl) return;
+
+    const alreadyBold = refEl.querySelector('strong')?.textContent?.includes(title);
+    if (alreadyBold) return;
+
+    const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const withStraightQuotes = new RegExp(`"${escapedTitle}"`, 'g');
+    const withCurlyQuotes = new RegExp(`“${escapedTitle}”`, 'g');
+    const plainTitle = new RegExp(escapedTitle, 'g');
+
+    if (withStraightQuotes.test(refEl.innerHTML)) {
+      refEl.innerHTML = refEl.innerHTML.replace(withStraightQuotes, `"<strong>${title}</strong>"`);
+      return;
+    }
+
+    if (withCurlyQuotes.test(refEl.innerHTML)) {
+      refEl.innerHTML = refEl.innerHTML.replace(withCurlyQuotes, `“<strong>${title}</strong>”`);
+      return;
+    }
+
+    refEl.innerHTML = refEl.innerHTML.replace(plainTitle, `<strong>${title}</strong>`);
+  });
+}
+
+function initPublicationPager() {
+  const section = document.getElementById('publications');
+  if (!section) return;
+
+  const pages = Array.from(section.querySelectorAll('.pubPage'));
+  if (pages.length <= 1) return;
+
+  const prevBtn = section.querySelector('#pub-prev');
+  const nextBtn = section.querySelector('#pub-next');
+  const infoEl = section.querySelector('#pub-page-info');
+  if (!prevBtn || !nextBtn || !infoEl) return;
+
+  let activeIndex = pages.findIndex((page) => !page.hasAttribute('hidden'));
+  if (activeIndex < 0) activeIndex = 0;
+
+  function renderPager() {
+    pages.forEach((page, index) => {
+      const isActive = index === activeIndex;
+      page.hidden = !isActive;
+      page.classList.toggle('is-active', isActive);
+    });
+
+    infoEl.textContent = `Page ${activeIndex + 1} of ${pages.length}`;
+    prevBtn.disabled = activeIndex === 0;
+    nextBtn.disabled = activeIndex === pages.length - 1;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if (activeIndex <= 0) return;
+    activeIndex -= 1;
+    renderPager();
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (activeIndex >= pages.length - 1) return;
+    activeIndex += 1;
+    renderPager();
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  renderPager();
+}
+
+function initAcademiaPager() {
+  const section = document.getElementById('academia');
+  if (!section) return;
+
+  const pages = Array.from(section.querySelectorAll('.acadPage'));
+  if (pages.length <= 1) return;
+
+  const prevBtn = section.querySelector('#acad-prev');
+  const nextBtn = section.querySelector('#acad-next');
+  const infoEl = section.querySelector('#acad-page-info');
+  if (!prevBtn || !nextBtn || !infoEl) return;
+
+  let activeIndex = pages.findIndex((page) => !page.hasAttribute('hidden'));
+  if (activeIndex < 0) activeIndex = 0;
+
+  function renderPager() {
+    pages.forEach((page, index) => {
+      const isActive = index === activeIndex;
+      page.hidden = !isActive;
+      page.classList.toggle('is-active', isActive);
+    });
+
+    infoEl.textContent = `Page ${activeIndex + 1} of ${pages.length}`;
+    prevBtn.disabled = activeIndex === 0;
+    nextBtn.disabled = activeIndex === pages.length - 1;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if (activeIndex <= 0) return;
+    activeIndex -= 1;
+    renderPager();
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (activeIndex >= pages.length - 1) return;
+    activeIndex += 1;
+    renderPager();
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  renderPager();
+}
+
 function getActivePanel() {
   return document.querySelector('.tabPanel.is-active');
 }
@@ -373,7 +612,14 @@ function initPageUi() {
     document.addEventListener('DOMContentLoaded', async () => {
       await loadSections();
       attachSkillLogos();
+      attachProjectTechIcons();
+      boldPublicationTitles();
       syncTimelineDots();
-      await loadResearchMetrics();
+      initPublicationPager();
+      initAcademiaPager();
+      await Promise.allSettled([
+        loadResearchMetrics(),
+        loadPublicationCitations(),
+      ]);
       initPageUi();
     });
