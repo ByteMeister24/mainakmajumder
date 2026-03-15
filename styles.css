@@ -893,6 +893,32 @@ section.card{
   margin-top:3px;
 }
 
+#research .workingGroupRole,
+#research .workingGroupOrg{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+}
+
+#research .workingGroupOrg{
+  margin-top:8px;
+}
+
+#research .workingGroupRole i,
+#research .workingGroupOrg i{
+  color:var(--accent2);
+  line-height:1;
+  margin-top:3px;
+}
+
+#research .workingGroupRole i{
+  font-size:16px;
+}
+
+#research .workingGroupOrg i{
+  font-size:14px;
+}
+
 .pub{
   display:flex;
   gap:12px;
