@@ -628,7 +628,7 @@ section.card{
   box-shadow: 0 0 0 2px rgba(34,197,94,.22), 0 0 8px rgba(34,197,94,.45);
 }
 .item .desc{margin:8px 0 0; color:var(--text); text-align:justify}
-#about .desc{font-size:17px; line-height:1.68}
+#about .desc{font-size:17px; line-height:1.68; text-align:left}
 
 #activities .activityRole{
   display:flex;
